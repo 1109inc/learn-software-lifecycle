@@ -1,0 +1,31 @@
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.exc import SQLAlchemyError
+
+from app.exceptions.database import DatabaseUnavailableError
+
+class HealthService:
+
+    async def check_database(
+        self,
+        db: AsyncSession,
+    ) -> None:
+        """
+        Check whether the database is reachable.
+
+        Returns:
+            True if the database is healthy.
+
+        Raises:
+            SQLAlchemyError or database driver exceptions if the
+            database cannot be reached.
+        """
+        try:
+            await db.execute(
+                text("SELECT 1")
+            )
+        except SQLAlchemyError as exc:
+            raise DatabaseUnavailableError() from exc
+
+
+health_service = HealthService()
