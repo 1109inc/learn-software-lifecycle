@@ -96,6 +96,24 @@ class UserService:
             user_update=user_update
         )
 
+    async def delete_user(
+        self,
+        db: AsyncSession,
+        user_id: int
+    ) -> None:
+
+        existing_user = await self.user_repository.get_user_by_id(
+            db=db,
+            user_id=user_id,
+        )
+
+        if not existing_user:
+            raise UserNotFoundError(user_id=user_id)
+
+        await self.user_repository.delete_user(
+            db=db,
+            user=existing_user
+        )
 
 
 user_service = UserService(

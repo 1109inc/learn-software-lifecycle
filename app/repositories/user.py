@@ -90,3 +90,13 @@ class UserRepository:
         await db.refresh(user)
 
         return user
+
+    async def delete_user(
+        self,
+        db: AsyncSession,
+        user: User
+    ) -> None:
+
+        await db.delete(user)
+
+        await db.commit()

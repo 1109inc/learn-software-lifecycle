@@ -115,3 +115,25 @@ async def update_user(
     )
 
     return user
+
+@router.delete(
+    "/{user_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="Delete a user",
+    description="Delete a user by ID.",
+    responses={
+        status.HTTP_404_NOT_FOUND: {
+            "model": ErrorResponse,
+            "description": "User not found.",
+        },
+    },
+
+)
+async def delete_user(
+    user_id: int,
+    db: AsyncSession = Depends(get_db),
+):
+    await user_service.delete_user(
+        db=db,
+        user_id=user_id,
+    )
