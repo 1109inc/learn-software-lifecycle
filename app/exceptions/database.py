@@ -6,6 +6,4 @@ class DatabaseUnavailableError(AppException):
     error_code = ErrorCode.DATABASE_UNAVAILABLE
 
     def __init__(self) -> None:
-        super().__init__(
-            "Database is currently unavailable."
-        )
+        super().__init__("Database is currently unavailable.")

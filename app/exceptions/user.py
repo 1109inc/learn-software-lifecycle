@@ -9,9 +9,8 @@ class UserAlreadyExistsError(AppException):
         self,
         email: str,
     ) -> None:
-        super().__init__(
-            f"User with email '{email}' already exists."
-        )
+        super().__init__(f"User with email '{email}' already exists.")
+
 
 class UserNotFoundError(AppException):
     error_code = ErrorCode.USER_NOT_FOUND
@@ -20,6 +19,4 @@ class UserNotFoundError(AppException):
         self,
         user_id: int,
     ) -> None:
-        super().__init__(
-            f"User with ID '{user_id}' not found."
-        )
+        super().__init__(f"User with ID '{user_id}' not found.")

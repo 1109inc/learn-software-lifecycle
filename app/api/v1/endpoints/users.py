@@ -1,25 +1,21 @@
+from typing import Annotated
+
 from fastapi import (
     APIRouter,
-    Depends,
-    status,
-    Query,
     Path,
+    status,
 )
-from app.db.session import get_db
-from app.services.user import user_service
-from app.schemas.user import (
-    UserCreate, 
-    UserResponse,
-    UserUpdate
-)
+
+from app.api.deps import DbSession
 from app.schemas.errors import ErrorResponse
-from sqlalchemy.ext.asyncio import AsyncSession
-from typing import List
+from app.schemas.user import UserCreate, UserResponse, UserUpdate
+from app.services.user import user_service
 
 router = APIRouter(
-    prefix = "/users",
-    tags = ["users"],
+    prefix="/users",
+    tags=["users"],
 )
+
 
 @router.post(
     "",
@@ -34,14 +30,12 @@ router = APIRouter(
         },
     },
 )
-async def create_user(
-    user : UserCreate,
-    db:AsyncSession = Depends(get_db)
-):
+async def create_user(user: UserCreate, db: DbSession):
     return await user_service.create_user(
         db=db,
         user=user,
     )
+
 
 @router.get(
     "/{user_id}",
@@ -57,34 +51,33 @@ async def create_user(
     },
 )
 async def get_user_by_id(
-    user_id: int = Path(
-        ...,
-        gt =0,
-        description = "Unique identifier of the user.",
-        example = 1,
-    ),
-    db: AsyncSession = Depends(get_db)
+    user_id: Annotated[
+        int,
+        Path(
+            gt=0,
+            description="Unique identifier of the user.",
+            examples=[1],
+        ),
+    ],
+    db: DbSession,
 ):
-    user = await user_service.get_user_by_id(
-        db=db,
-        user_id=user_id
-    )
+
+    user = await user_service.get_user_by_id(db=db, user_id=user_id)
 
     return user
 
+
 @router.get(
     "/",
-    response_model=List[UserResponse],
+    response_model=list[UserResponse],
     description="Get all users",
     summary="List of all users",
-
 )
-async def get_users(
-    db: AsyncSession = Depends(get_db)
-):
+async def get_users(db: DbSession):
     return await user_service.get_users(
         db=db,
     )
+
 
 @router.patch(
     "/{user_id}",
@@ -106,7 +99,7 @@ async def get_users(
 async def update_user(
     user_id: int,
     user_update: UserUpdate,
-    db: AsyncSession = Depends(get_db),
+    db: DbSession,
 ):
     user = await user_service.update_user(
         db=db,
@@ -115,6 +108,7 @@ async def update_user(
     )
 
     return user
+
 
 @router.delete(
     "/{user_id}",
@@ -127,11 +121,10 @@ async def update_user(
             "description": "User not found.",
         },
     },
-
 )
 async def delete_user(
     user_id: int,
-    db: AsyncSession = Depends(get_db),
+    db: DbSession,
 ):
     await user_service.delete_user(
         db=db,

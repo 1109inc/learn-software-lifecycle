@@ -1,11 +1,6 @@
 from datetime import datetime
 
-from pydantic import (
-    BaseModel, 
-    ConfigDict, 
-    EmailStr, 
-    Field
-)
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 
 class UserBase(BaseModel):
@@ -15,19 +10,20 @@ class UserBase(BaseModel):
         description="The name of the user.",
     )
     email: EmailStr = Field(
-        description="Unique email address of the user.",
-        examples=["user@example.com"]
+        description="Unique email address of the user.", examples=["user@example.com"]
     )
 
 
 class UserCreate(UserBase):
     pass
 
+
 class UserResponse(UserBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
     created_at: datetime
+
 
 class UserUpdate(BaseModel):
     name: str | None = Field(

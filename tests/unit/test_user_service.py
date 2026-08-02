@@ -1,15 +1,17 @@
-import pytest
 from unittest.mock import AsyncMock
-from app.services.user import UserService
-from app.schemas.user import (
-    UserCreate,
-    UserUpdate,
-)
-from app.models.user import User
+
+import pytest
+
 from app.exceptions.user import (
     UserAlreadyExistsError,
     UserNotFoundError,
 )
+from app.models.user import User
+from app.schemas.user import (
+    UserCreate,
+    UserUpdate,
+)
+from app.services.user import UserService
 
 
 @pytest.mark.asyncio
@@ -24,11 +26,7 @@ async def test_create_user_success():
         email="pragat@gmail.com",
     )
 
-    created_user = User(
-        id=1,
-        name="Pragat",
-        email="pragat@gmail.com"
-    )
+    created_user = User(id=1, name="Pragat", email="pragat@gmail.com")
 
     repository.get_user_by_email.return_value = None
     repository.create_user.return_value = created_user
@@ -106,20 +104,12 @@ async def test_update_user_success():
 
     repository = AsyncMock()
 
-    existing_user = User(
-        id=1,
-        name="Pragat",
-        email="pragat@gmail.com"
-    )
+    existing_user = User(id=1, name="Pragat", email="pragat@gmail.com")
 
-    updated_user = User(
-            id=1,
-            name="Pragat Updated",
-            email="pragat@gmail.com"
-    )
+    updated_user = User(id=1, name="Pragat Updated", email="pragat@gmail.com")
 
-    user_update=UserUpdate(
-        name = "Pragat Updated",
+    user_update = UserUpdate(
+        name="Pragat Updated",
     )
 
     repository.get_user_by_id.return_value = existing_user
@@ -186,18 +176,15 @@ async def test_update_user_not_found():
 
     repository.update_user.assert_not_called()
 
+
 @pytest.mark.asyncio
 async def test_update_user_duplicate_email():
-    
+
     # Arrange
 
     repository = AsyncMock()
 
-    existing_user = User(
-        id=1,
-        name="Pragat",
-        email="pragat@gmail.com"
-    )
+    existing_user = User(id=1, name="Pragat", email="pragat@gmail.com")
 
     another_user = User(
         id=2,
@@ -205,9 +192,7 @@ async def test_update_user_duplicate_email():
         email="another@gmail.com",
     )
 
-    user_update = UserUpdate(
-        email="another@gmail.com"
-    )
+    user_update = UserUpdate(email="another@gmail.com")
 
     repository.get_user_by_id.return_value = existing_user
     repository.get_user_by_email.return_value = another_user
@@ -217,7 +202,7 @@ async def test_update_user_duplicate_email():
     )
 
     # Act & Assert
-    
+
     with pytest.raises(UserAlreadyExistsError):
         await service.update_user(
             db=None,
@@ -237,6 +222,7 @@ async def test_update_user_duplicate_email():
 
     repository.update_user.assert_not_called()
 
+
 @pytest.mark.asyncio
 async def test_update_user_same_email_success():
 
@@ -244,15 +230,9 @@ async def test_update_user_same_email_success():
 
     repository = AsyncMock()
 
-    existing_user = User(
-        id=1,
-        name="Pragat",
-        email="pragat@gmail.com"
-    )
+    existing_user = User(id=1, name="Pragat", email="pragat@gmail.com")
 
-    user_update = UserUpdate(
-        email="pragat@gmail.com"
-    )
+    user_update = UserUpdate(email="pragat@gmail.com")
 
     repository.get_user_by_id.return_value = existing_user
     repository.get_user_by_email.return_value = existing_user
@@ -290,6 +270,7 @@ async def test_update_user_same_email_success():
         user_update=user_update,
     )
 
+
 @pytest.mark.asyncio
 async def test_delete_user_success():
 
@@ -297,11 +278,7 @@ async def test_delete_user_success():
 
     repository = AsyncMock()
 
-    existing_user = User(
-        id=1,
-        name="Pragat",
-        email="pragat@gmail.com"
-    )
+    existing_user = User(id=1, name="Pragat", email="pragat@gmail.com")
 
     repository.get_user_by_id.return_value = existing_user
     repository.delete_user.return_value = None
@@ -328,6 +305,7 @@ async def test_delete_user_success():
         db=None,
         user=existing_user,
     )
+
 
 @pytest.mark.asyncio
 async def test_delete_user_not_found():
@@ -357,6 +335,7 @@ async def test_delete_user_not_found():
 
     repository.delete_user.assert_not_called()
 
+
 @pytest.mark.asyncio
 async def test_get_user_success():
 
@@ -364,11 +343,7 @@ async def test_get_user_success():
 
     repository = AsyncMock()
 
-    existing_user = User(
-        id=1,
-        name="Pragat",
-        email="pragat@gmail.com"
-    )
+    existing_user = User(id=1, name="Pragat", email="pragat@gmail.com")
 
     repository.get_user_by_id.return_value = existing_user
 
@@ -392,9 +367,10 @@ async def test_get_user_success():
         user_id=1,
     )
 
+
 @pytest.mark.asyncio
 async def test_get_user_not_found():
-    
+
     # Arrange
 
     repository = AsyncMock()
@@ -418,6 +394,7 @@ async def test_get_user_not_found():
         user_id=1,
     )
 
+
 @pytest.mark.asyncio
 async def test_get_users_success():
 
@@ -426,16 +403,8 @@ async def test_get_users_success():
     repository = AsyncMock()
 
     users_list = [
-        User(
-            id=1,
-            name="Pragat",
-            email="pragat@gmail.com"
-        ),
-        User(
-            id=2,
-            name="John",
-            email="john@gmail.com"
-        )
+        User(id=1, name="Pragat", email="pragat@gmail.com"),
+        User(id=2, name="John", email="john@gmail.com"),
     ]
 
     repository.get_users.return_value = users_list

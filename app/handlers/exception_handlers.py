@@ -7,9 +7,8 @@ from fastapi.responses import JSONResponse
 
 from app.exceptions.base import AppException
 from app.exceptions.database import DatabaseUnavailableError
-from app.exceptions.user import UserAlreadyExistsError,UserNotFoundError
+from app.exceptions.user import UserAlreadyExistsError, UserNotFoundError
 from app.schemas.errors import ErrorResponse
-
 
 EXCEPTION_STATUS_CODE_MAP = {
     UserAlreadyExistsError: status.HTTP_409_CONFLICT,
@@ -37,7 +36,9 @@ async def app_exception_handler(
 
 
 def register_exception_handlers(app: FastAPI) -> None:
+    # Starlette types handlers as accepting bare Exception; it only ever calls
+    # this one with AppException, but the signature can't express that.
     app.add_exception_handler(
         AppException,
-        app_exception_handler,
+        app_exception_handler,  # type: ignore[arg-type]
     )
