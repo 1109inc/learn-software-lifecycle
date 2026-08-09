@@ -34,7 +34,7 @@ class UserService:
             user=user,
         )
 
-    async def get_user_by_id(self, db: AsyncSession, user_id: int) -> User:
+    async def get_user_by_id(self, db: AsyncSession, user_id: int) -> str:
 
         existing_user = await self.user_repository.get_user_by_id(db=db, user_id=user_id)
 
