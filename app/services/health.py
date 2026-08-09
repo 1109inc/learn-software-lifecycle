@@ -13,13 +13,10 @@ class HealthService:
         """
         Check whether the database is reachable.
 
-        Returns:
-            True if the database is healthy.
-
         Raises:
-            SQLAlchemyError or database driver exceptions if the
-            database cannot be reached.
+            DatabaseUnavailableError: if the database cannot be reached.
         """
+
         try:
             await db.execute(text("SELECT 1"))
         except SQLAlchemyError as exc:
