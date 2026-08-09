@@ -13,8 +13,9 @@ router = APIRouter(prefix="/health", tags=["health"])
     summary="Liveness probe",
     description="Returns 200 while the process is running. Checks no dependencies.",
 )
-async def liveness() -> dict[str,str]:
+async def liveness() -> dict[str, str]:
     return {"status": "alive"}
+
 
 @router.get(
     "/ready",
@@ -28,6 +29,6 @@ async def liveness() -> dict[str,str]:
         },
     },
 )
-async def readiness(db: DbSession) -> dict[str,str]:
+async def readiness(db: DbSession) -> dict[str, str]:
     await health_service.check_database(db=db)
     return {"status": "ready", "database": "ok"}
