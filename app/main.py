@@ -6,19 +6,27 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.root_router import router as api_router
+from app.core.logging import configure_logging
 from app.core.settings import settings
 from app.db.session import engine
 from app.handlers.exception_handlers import register_exception_handlers
+from app.middleware.request_context import RequestContextMiddleware
 
 logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
+    configure_logging()
+
     logger.info(
-        "Application starting up: environment=%s version=%s",
-        settings.ENVIRONMENT,
-        settings.GIT_SHA,
+        "Application starting up",
+        extra={
+            "context": {
+                "environment": settings.ENVIRONMENT,
+                "version": settings.GIT_SHA,
+            }
+        },
     )
 
     try:
@@ -38,6 +46,8 @@ app = FastAPI(
     redoc_url=None if settings.is_production else "/redoc",
     openapi_url=None if settings.is_production else "/openapi.json",
 )
+
+app.add_middleware(RequestContextMiddleware)
 
 app.add_middleware(
     CORSMiddleware,
