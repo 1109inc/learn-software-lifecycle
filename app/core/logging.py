@@ -41,3 +41,6 @@ def configure_logging() -> None:
         uvicorn_logger = logging.getLogger(name)
         uvicorn_logger.handlers = []
         uvicorn_logger.propagate = True
+
+    # Our middleware already logs every request, with duration.
+    logging.getLogger("uvicorn.access").disabled = True
